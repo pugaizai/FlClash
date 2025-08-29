@@ -18,6 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:material_color_utilities/palettes/core_palette.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path/path.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:yaml_writer/yaml_writer.dart';
 
@@ -81,6 +82,29 @@ class GlobalState {
     await init();
     appState = appState.copyWith(coreStatus: CoreStatus.connected);
     await window?.init(version);
+    _shakingStore();
+  }
+
+  Future<void> _shakingStore() async {
+    final profileIds = config.profiles.map((item) => item.id);
+    final providersRootPath = await appPath.getProvidersRootPath();
+    final profilesRootPath = await appPath.profilesPath;
+    Isolate.run(() async {
+      final profilesDir = Directory(profilesRootPath);
+      final providersDir = Directory(providersRootPath);
+      final paths = [];
+      if (await profilesDir.exists()) {
+        paths.addAll(profilesDir.listSync().map((item) => item.path));
+      }
+      if (await providersDir.exists()) {
+        paths.addAll(providersDir.listSync().map((item) => item.path));
+      }
+      for (final path in paths) {
+        if (!profileIds.contains(basename(path))) {
+          await File(path).delete();
+        }
+      }
+    });
   }
 
   Future<void> _initDynamicColor() async {
