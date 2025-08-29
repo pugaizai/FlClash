@@ -94,16 +94,23 @@ class GlobalState {
       final providersDir = Directory(providersRootPath);
       final paths = [];
       if (await profilesDir.exists()) {
-        paths.addAll(profilesDir.listSync().map((item) => item.path));
+        paths.addAll(
+          profilesDir
+              .listSync()
+              .map((item) => item.path)
+              .where((item) => !item.contains('providers')),
+        );
       }
       if (await providersDir.exists()) {
         paths.addAll(providersDir.listSync().map((item) => item.path));
       }
-      for (final path in paths) {
-        if (!profileIds.contains(basename(path))) {
+      final deleteFutures = paths.map((path) async {
+        if (!profileIds.contains(basenameWithoutExtension(path))) {
           await File(path).delete();
         }
-      }
+        return true;
+      });
+      await Future.wait(deleteFutures);
     });
   }
 
@@ -299,7 +306,7 @@ class GlobalState {
         if (!await file.exists()) {
           await file.create(recursive: true);
         }
-        await file.writeAsString(data, flush: true);
+        await file.writeAsString(data);
         return '';
       } catch (e) {
         return e.toString();
