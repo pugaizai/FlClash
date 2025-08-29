@@ -22,7 +22,7 @@ import com.follow.clash.common.Components
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.QuickAction
 import com.follow.clash.common.quickIntent
-import com.follow.clash.getBase64
+import com.follow.clash.getPackageIconPath
 import com.follow.clash.models.Package
 import com.google.gson.Gson
 import io.flutter.embedding.android.FlutterActivity
@@ -150,26 +150,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
             }
 
             "getPackageIcon" -> {
-                scope.launch {
-                    val packageName = call.argument<String>("packageName")
-                    if (packageName == null) {
-                        result.success(null)
-                        return@launch
-                    }
-                    val packageIcon = getPackageIcon(packageName)
-                    packageIcon.let {
-                        if (it != null) {
-                            result.success(it)
-                            return@launch
-                        }
-                        if (iconMap["default"] == null) {
-                            iconMap["default"] =
-                                GlobalState.application.packageManager?.defaultActivityIcon?.getBase64()
-                        }
-                        result.success(iconMap["default"])
-                        return@launch
-                    }
-                }
+                handleGetPackageIcon(call, result)
             }
 
             "tip" -> {
@@ -181,6 +162,19 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
             else -> {
                 result.notImplemented()
             }
+        }
+    }
+
+    private fun handleGetPackageIcon(call: MethodCall, result: Result) {
+        scope.launch {
+            val packageName = call.argument<String>("packageName")
+            if (packageName == null) {
+                result.success("")
+                return@launch
+            }
+            val path =
+                GlobalState.application.packageManager.getPackageIconPath(packageName)
+            result.success(path)
         }
     }
 
@@ -223,18 +217,6 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         }
     }
 
-    private suspend fun getPackageIcon(packageName: String): String? {
-        val packageManager = GlobalState.application.packageManager
-        if (iconMap[packageName] == null) {
-            iconMap[packageName] = try {
-                packageManager?.getApplicationIcon(packageName)?.getBase64()
-            } catch (_: Exception) {
-                null
-            }
-
-        }
-        return iconMap[packageName]
-    }
 
     private fun getPackages(): List<Package> {
         val packageManager = GlobalState.application.packageManager

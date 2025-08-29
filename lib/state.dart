@@ -86,6 +86,10 @@ class GlobalState {
   }
 
   Future<void> _shakingStore() async {
+    final iconCacheDir = File(await appPath.getIconsCacheDir());
+    if (await iconCacheDir.exists()) {
+      iconCacheDir.delete();
+    }
     final profileIds = config.profiles.map((item) => item.id);
     final providersRootPath = await appPath.getProvidersRootPath();
     final profilesRootPath = await appPath.profilesPath;
