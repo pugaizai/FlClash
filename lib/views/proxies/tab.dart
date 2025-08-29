@@ -325,52 +325,38 @@ class _ProxyGroupViewState extends ConsumerState<ProxyGroupView> {
     );
     currentProxies = sortedProxies;
     testUrl = group.testUrl;
-    final items = <Widget>[];
-    final groupName = group.name;
-    final columns = widget.columns;
-    final cardType = widget.cardType;
-    final chunks = sortedProxies.chunks(columns);
-    final rows = chunks
-        .map<Widget>((proxies) {
-          final children = proxies
-              .map<Widget>(
-                (proxy) => Flexible(
-                  child: SizedBox(
-                    height: getItemHeight(cardType),
-                    child: ProxyCard(
-                      testUrl: group.testUrl,
-                      type: cardType,
-                      groupType: group.type,
-                      key: ValueKey('$groupName.${proxy.name}'),
-                      proxy: proxy,
-                      groupName: groupName,
-                    ),
-                  ),
-                ),
-              )
-              .fill(columns, filler: (_) => const Flexible(child: SizedBox()))
-              .separated(const SizedBox(width: 8));
 
-          return Row(children: children.toList());
-        })
-        .separated(const SizedBox(height: 8));
-    items.addAll([...rows, const SizedBox(height: 8)]);
-
-    return CommonScrollBar(
-      controller: _controller,
-      child: ListView.builder(
-        key: _getPageStorageKey(),
+    return Align(
+      alignment: Alignment.topCenter,
+      child: CommonScrollBar(
         controller: _controller,
-        padding: const EdgeInsets.only(
-          top: 16,
-          left: 16,
-          right: 16,
-          bottom: 80,
+        child: GridView.builder(
+          key: _getPageStorageKey(),
+          controller: _controller,
+          padding: const EdgeInsets.only(
+            top: 16,
+            left: 16,
+            right: 16,
+            bottom: 96,
+          ),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: widget.columns,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            mainAxisExtent: getItemHeight(widget.cardType),
+          ),
+          itemCount: sortedProxies.length,
+          itemBuilder: (_, index) {
+            final proxy = sortedProxies[index];
+            return ProxyCard(
+              testUrl: group.testUrl,
+              groupType: group.type,
+              type: widget.cardType,
+              proxy: proxy,
+              groupName: group.name,
+            );
+          },
         ),
-        itemCount: items.length,
-        itemBuilder: (_, index) {
-          return items[index];
-        },
       ),
     );
   }
