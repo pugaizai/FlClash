@@ -8,7 +8,6 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/experimental/scope.dart';
 
 import '../../models/common.dart';
 import 'card.dart';
@@ -249,7 +248,6 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
   }
 }
 
-@Dependencies([proxiesTabState, proxiesTabControllerState])
 class ProxyGroupView extends ConsumerStatefulWidget {
   final Group group;
   final int columns;
