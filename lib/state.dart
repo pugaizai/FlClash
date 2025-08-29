@@ -92,21 +92,20 @@ class GlobalState {
     Isolate.run(() async {
       final profilesDir = Directory(profilesRootPath);
       final providersDir = Directory(providersRootPath);
-      final paths = [];
+      final List<FileSystemEntity> entities = [];
       if (await profilesDir.exists()) {
-        paths.addAll(
-          profilesDir
-              .listSync()
-              .map((item) => item.path)
-              .where((item) => !item.contains('providers')),
+        entities.addAll(
+          profilesDir.listSync().where(
+            (item) => !item.path.contains('providers'),
+          ),
         );
       }
       if (await providersDir.exists()) {
-        paths.addAll(providersDir.listSync().map((item) => item.path));
+        entities.addAll(providersDir.listSync());
       }
-      final deleteFutures = paths.map((path) async {
-        if (!profileIds.contains(basenameWithoutExtension(path))) {
-          await File(path).delete();
+      final deleteFutures = entities.map((entity) async {
+        if (!profileIds.contains(basenameWithoutExtension(entity.path))) {
+          await entity.delete(recursive: true);
         }
         return true;
       });

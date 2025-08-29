@@ -149,13 +149,16 @@ class _ProxiesListViewState extends State<ProxiesListView> {
               final children = proxies
                   .map<Widget>(
                     (proxy) => Flexible(
-                      child: ProxyCard(
-                        testUrl: group.testUrl,
-                        type: cardType,
-                        groupType: group.type,
-                        key: ValueKey('$groupName.${proxy.name}'),
-                        proxy: proxy,
-                        groupName: groupName,
+                      child: SizedBox(
+                        height: getItemHeight(cardType),
+                        child: ProxyCard(
+                          testUrl: group.testUrl,
+                          type: cardType,
+                          groupType: group.type,
+                          key: ValueKey('$groupName.${proxy.name}'),
+                          proxy: proxy,
+                          groupName: groupName,
+                        ),
                       ),
                     ),
                   )

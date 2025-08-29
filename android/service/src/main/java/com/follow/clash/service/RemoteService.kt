@@ -28,10 +28,6 @@ class RemoteService : Service(),
         }
     }
 
-    fun onServiceDisconnected() {
-        handleStopService()
-    }
-
     private fun handleStartService() {
         launch {
             val nextIntent = when (State.options?.enable == true) {
@@ -40,7 +36,7 @@ class RemoteService : Service(),
             }
             if (intent != nextIntent) {
                 delegate?.unbind()
-                delegate = ServiceDelegate(nextIntent, ::onServiceDisconnected) { binder ->
+                delegate = ServiceDelegate(nextIntent) { binder ->
                     when (binder) {
                         is VpnService.LocalBinder -> binder.getService()
                         is CommonService.LocalBinder -> binder.getService()
