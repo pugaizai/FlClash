@@ -3,9 +3,9 @@ package com.follow.clash
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Base64
 import androidx.core.graphics.drawable.toBitmap
 import com.follow.clash.common.GlobalState
 import io.flutter.embedding.engine.FlutterEngine
@@ -14,53 +14,63 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 
-suspend fun Drawable.getBase64(): String {
-    val drawable = this
-    return withContext(Dispatchers.IO) {
-        val bitmap = drawable.toBitmap()
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-        Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.NO_WRAP)
-    }
-}
+private const val ICON_TTL_DAYS = 1L
 
-suspend fun PackageManager.getPackageIconPath(packageName: String): String {
-    return withContext(Dispatchers.IO) {
-        val icon = getApplicationIcon(packageName)
+suspend fun PackageManager.getPackageIconPath(packageName: String): String =
+    withContext(Dispatchers.IO) {
         val cacheDir = GlobalState.application.cacheDir
-        val iconDir = File(cacheDir, "icons").apply {
-            if (!exists()) mkdirs()
+        val iconDir = File(cacheDir, "icons").apply { mkdirs() }
+        val pkgInfo = getPackageInfo(packageName, 0)
+        val lastUpdateTime = pkgInfo.lastUpdateTime
+        val iconFile = File(iconDir, "${packageName}_${lastUpdateTime}.webp")
+        if (iconFile.exists() && !isExpired(iconFile)) {
+            return@withContext iconFile.absolutePath
         }
-        val iconFile = File(iconDir, "${packageName}_icon.png")
+        iconDir.listFiles()?.forEach { file ->
+            if (file.name.startsWith(packageName + "_")) file.delete()
+        }
         return@withContext try {
+            val icon = getApplicationIcon(packageName)
             saveDrawableToFile(icon, iconFile)
             iconFile.absolutePath
         } catch (_: Exception) {
-            val defaultIconFile = File(iconDir, "default_icon.png")
+            val defaultIconFile = File(iconDir, "default_icon.webp")
             if (!defaultIconFile.exists()) {
                 saveDrawableToFile(defaultActivityIcon, defaultIconFile)
             }
             defaultIconFile.absolutePath
         }
     }
-}
 
 private fun saveDrawableToFile(drawable: Drawable, file: File) {
     val bitmap = drawable.toBitmap()
     try {
+        val format = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                Bitmap.CompressFormat.WEBP_LOSSY
+            }
+
+            else -> {
+                Bitmap.CompressFormat.WEBP
+            }
+        }
         FileOutputStream(file).use { fos ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
+            bitmap.compress(format, 90, fos)
         }
     } finally {
-        if (!bitmap.isRecycled) {
-            bitmap.recycle()
-        }
+        if (!bitmap.isRecycled) bitmap.recycle()
     }
+}
+
+private fun isExpired(file: File): Boolean {
+    val now = System.currentTimeMillis()
+    val age = now - file.lastModified()
+    return age > TimeUnit.DAYS.toMillis(ICON_TTL_DAYS)
 }
 
 suspend fun <T> MethodChannel.awaitResult(
