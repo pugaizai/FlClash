@@ -182,15 +182,12 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
     final children = groups.map((group) {
       final key = GlobalObjectKey<_ProxyGroupViewState>(group.name);
       keyMap[group.name] = key;
-      return KeepScope(
-        keep: true,
-        child: ProxyGroupView(
-          key: key,
-          group: group,
-          columns: state.columns,
-          cardType: state.proxyCardType,
-          sortType: state.proxiesSortType,
-        ),
+      return ProxyGroupView(
+        key: key,
+        group: group,
+        columns: state.columns,
+        cardType: state.proxyCardType,
+        sortType: state.proxiesSortType,
       );
     }).toList();
     _keyMap = keyMap;
