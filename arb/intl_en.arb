@@ -322,7 +322,6 @@
   "routeMode_config": "Use config",
   "routeAddress": "Route address",
   "routeAddressDesc": "Config listen route address",
-  "pleaseInputAdminPassword": "Please enter the admin password",
   "copyEnvVar": "Copying environment variables",
   "memoryInfo": "Memory info",
   "cancel": "Cancel",
