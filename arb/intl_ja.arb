@@ -322,7 +322,6 @@
   "routeMode_config": "設定を使用",
   "routeAddress": "ルートアドレス",
   "routeAddressDesc": "ルートアドレスを設定",
-  "pleaseInputAdminPassword": "管理者パスワードを入力",
   "copyEnvVar": "環境変数をコピー",
   "memoryInfo": "メモリ情報",
   "cancel": "キャンセル",

@@ -6,8 +6,6 @@ import 'package:ffi/ffi.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/plugins/app.dart';
-import 'package:fl_clash/state.dart';
-import 'package:fl_clash/widgets/input.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 
@@ -95,18 +93,12 @@ class System {
       return AuthorizeCode.success;
     } else if (Platform.isLinux) {
       final shell = Platform.environment['SHELL'] ?? 'bash';
-      final password = await globalState.showCommonDialog<String>(
-        child: InputDialog(
-          obscureText: true,
-          title: appLocalizations.pleaseInputAdminPassword,
-          value: '',
-        ),
-      );
       final arguments = [
+        shell,
         '-c',
-        'echo "$password" | sudo -S chown root:root "$corePath" && echo "$password" | sudo -S chmod +sx "$corePath"'
+        'chown root:root "$corePath" && chmod +sx "$corePath"'
       ];
-      final result = await Process.run(shell, arguments);
+      final result = await Process.run('pkexec', arguments);
       if (result.exitCode != 0) {
         return AuthorizeCode.error;
       }
