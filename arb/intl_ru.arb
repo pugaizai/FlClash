@@ -409,7 +409,7 @@
   "autoSetSystemDns": "Автоматическая настройка системного DNS",
   "details": "Детали {}",
   "creationTime": "Время создания",
-  "progress": "Прогресс",
+  "process": "процесс",
   "host": "Хост",
   "destination": "Назначение",
   "destinationGeoIP": "Геолокация назначения",
@@ -421,5 +421,12 @@
   "proxyChains": "Цепочки прокси",
   "log": "Журнал",
   "connection": "Соединение",
-  "request": "Запрос"
+  "request": "Запрос",
+  "connected": "Подключено",
+  "disconnected": "Отключено",
+  "connecting": "Подключение...",
+  "restartCoreTip": "Вы уверены, что хотите перезапустить ядро?",
+  "forceRestartCoreTip": "Вы уверены, что хотите принудительно перезапустить ядро?",
+  "dnsHijacking": "DNS-перехват",
+  "coreStatus": "Основной статус"
 }

@@ -408,7 +408,7 @@
   "autoSetSystemDns": "Auto set system DNS",
   "details": "{label} details",
   "creationTime": "Creation time",
-  "progress": "Progress",
+  "process": "Process",
   "host": "Host",
   "destination": "Destination",
   "destinationGeoIP": "Destination GeoIP",
@@ -420,5 +420,12 @@
   "proxyChains": "Proxy chains",
   "log": "Log",
   "connection": "Connection",
-  "request": "Request"
+  "request": "Request",
+  "connected": "Connected",
+  "disconnected": "Disconnected",
+  "connecting": "Connecting...",
+  "restartCoreTip": "Are you sure you want to restart the core?",
+  "forceRestartCoreTip": "Are you sure you want to force restart the core?",
+  "dnsHijacking": "DNS hijacking",
+  "coreStatus": "Core status"
 }
