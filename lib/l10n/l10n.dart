@@ -3159,9 +3159,9 @@ class AppLocalizations {
     );
   }
 
-  /// `Progress`
-  String get progress {
-    return Intl.message('Progress', name: 'progress', desc: '', args: []);
+  /// `Process`
+  String get process {
+    return Intl.message('Process', name: 'process', desc: '', args: []);
   }
 
   /// `Host`

@@ -410,7 +410,7 @@
   "autoSetSystemDns": "自动设置系统DNS",
   "details": "{label}详情",
   "creationTime": "创建时间",
-  "progress": "进度",
+  "process": "进程",
   "host": "主机",
   "destination": "目标地址",
   "destinationGeoIP": "目标地理定位",

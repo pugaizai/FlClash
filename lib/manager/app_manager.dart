@@ -184,99 +184,99 @@ class AppSidebarContainer extends ConsumerWidget {
     final isExtend = ref.watch(appSettingProvider).showLabel;
     return Row(
       children: [
-        Stack(
-          alignment: Alignment.topRight,
-          children: [
-            _buildBackground(
-              context: context,
-              child: SafeArea(
-                child: AnimatedSize(
-                  curve: Curves.easeOut,
-                  alignment: Alignment.centerLeft,
-                  duration: commonDuration,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (system.isMacOS) SizedBox(height: 22),
-                      SizedBox(height: 10),
-                      if (!system.isMacOS) ...[
-                        ClipRect(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20),
-                            child: AppIcon(),
-                          ),
-                        ),
-                        SizedBox(height: 12),
-                      ],
-                      Expanded(
-                        child: ScrollConfiguration(
-                          behavior: HiddenBarScrollBehavior(),
-                          child: SingleChildScrollView(
-                            child: IntrinsicHeight(
-                              child: NavigationRail(
-                                backgroundColor: Colors.transparent,
-                                selectedLabelTextStyle: context
-                                    .textTheme
-                                    .labelLarge!
-                                    .copyWith(
-                                      color: context.colorScheme.onSurface,
-                                    ),
-                                unselectedLabelTextStyle: context
-                                    .textTheme
-                                    .labelLarge!
-                                    .copyWith(
-                                      color: context.colorScheme.onSurface,
-                                    ),
-                                destinations: navigationItems
-                                    .map(
-                                      (e) => NavigationRailDestination(
-                                        icon: e.icon,
-                                        label: Text(Intl.message(e.label.name)),
+        _buildBackground(
+          context: context,
+          child: Stack(
+            alignment: Alignment.topRight,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (system.isMacOS) SizedBox(height: 22),
+                  SizedBox(height: 10),
+                  if (!system.isMacOS) ...[
+                    ClipRect(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 20),
+                        child: AppIcon(),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                  ],
+                  Expanded(
+                    child: ScrollConfiguration(
+                      behavior: HiddenBarScrollBehavior(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: NavigationRail(
+                              scrollable: true,
+                              minExtendedWidth: 200,
+                              backgroundColor: Colors.transparent,
+                              selectedLabelTextStyle: context
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
+                                    color: context.colorScheme.onSurface,
+                                  ),
+                              unselectedLabelTextStyle: context
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
+                                    color: context.colorScheme.onSurface,
+                                  ),
+                              destinations: navigationItems
+                                  .map(
+                                    (e) => NavigationRailDestination(
+                                      icon: e.icon,
+                                      label: Padding(
+                                        padding: EdgeInsets.only(right: 12),
+                                        child: Text(Intl.message(e.label.name)),
                                       ),
-                                    )
-                                    .toList(),
-                                onDestinationSelected: (index) {
-                                  globalState.appController.toPage(
-                                    navigationItems[index].label,
-                                  );
-                                },
-                                extended: isExtend,
-                                selectedIndex: currentIndex,
-                                // labelType: showLabel
-                                //     ? NavigationRailLabelType.all
-                                //     : NavigationRailLabelType.none,
-                              ),
+                                    ),
+                                  )
+                                  .toList(),
+                              onDestinationSelected: (index) {
+                                globalState.appController.toPage(
+                                  navigationItems[index].label,
+                                );
+                              },
+                              extended: isExtend,
+                              selectedIndex: currentIndex,
+                              // labelType: showLabel
+                              //     ? NavigationRailLabelType.all
+                              //     : NavigationRailLabelType.none,
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                      const SizedBox(height: 16),
-                      Padding(
-                        padding: EdgeInsets.only(left: 20),
-                        child: IconButton(
-                          onPressed: () {
-                            ref
-                                .read(appSettingProvider.notifier)
-                                .updateState(
-                                  (state) => state.copyWith(
-                                    showLabel: !state.showLabel,
-                                  ),
-                                );
-                          },
-                          icon: Icon(
-                            Icons.menu,
-                            color: context.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: IconButton(
+                      onPressed: () {
+                        ref
+                            .read(appSettingProvider.notifier)
+                            .updateState(
+                              (state) =>
+                                  state.copyWith(showLabel: !state.showLabel),
+                            );
+                      },
+                      icon: Icon(
+                        Icons.menu,
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
-            ),
-            _buildLoading(),
-          ],
+              _buildLoading(),
+            ],
+          ),
         ),
         Expanded(
           flex: 1,

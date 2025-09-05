@@ -409,7 +409,7 @@
   "autoSetSystemDns": "Auto set system DNS",
   "details": "{label} details",
   "creationTime": "Creation time",
-  "progress": "Progress",
+  "process": "Process",
   "host": "Host",
   "destination": "Destination",
   "destinationGeoIP": "Destination GeoIP",

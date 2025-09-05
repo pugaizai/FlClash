@@ -202,7 +202,7 @@ class TrackerInfoDetailView extends StatelessWidget {
     return rule;
   }
 
-  String _getProgressText() {
+  String _getProcessText() {
     final process = trackerInfo.metadata.process;
     final uid = trackerInfo.metadata.uid;
     if (uid != 0) {
@@ -297,8 +297,8 @@ class TrackerInfoDetailView extends StatelessWidget {
         title: appLocalizations.creationTime,
         desc: trackerInfo.start.showFull,
       ),
-      if (_getProgressText().isNotEmpty)
-        _buildItem(title: appLocalizations.progress, desc: _getProgressText()),
+      if (_getProcessText().isNotEmpty)
+        _buildItem(title: appLocalizations.process, desc: _getProcessText()),
       _buildItem(
         title: appLocalizations.networkType,
         desc: trackerInfo.metadata.network,
